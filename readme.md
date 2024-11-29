@@ -36,7 +36,7 @@ The intention is that the screen shows the "application state":
 
 The image below shows the OSP32 board with the UI elements highlighted in red.
 
-![OPS32 board with UI](extras/osp32ui.jpg)
+![OSP32 board with UI](extras/osp32ui.jpg)
 
 
 ## Examples
@@ -173,6 +173,9 @@ library.
 
 
 ## Version history _aoui32_
+
+- **2024 November 29, 0.3.9**
+  - Text correction in `readme.md`.
 
 - **2024 October 8, 0.3.8**
   - Prefixed `modules.drawio.png` with library short name.
