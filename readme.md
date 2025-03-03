@@ -174,6 +174,10 @@ library.
 
 ## Version history _aoui32_
 
+- **2025 March 3, 0.3.10**
+  - Improved doc on `aoui32_but_scan()`.
+  - Bug fix in `aoui32_but_init()`.
+  
 - **2024 November 29, 0.3.9**
   - Text correction in `readme.md`.
 

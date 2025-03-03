@@ -46,37 +46,48 @@ void aoui32_but_init() {
   pinMode( AOUI32_BUT_A_PIN, INPUT_PULLUP );
   pinMode( AOUI32_BUT_X_PIN, INPUT_PULLUP );
   pinMode( AOUI32_BUT_Y_PIN, INPUT_PULLUP );
-  // Scan in the button states
-  aoui32_but_lastscan= millis() - AOUI32_BUT_BOUNCE_MS; // force capture in scan
+  // Scan the button states, 
+  aoui32_but_lastscan= millis() - AOUI32_BUT_BOUNCE_MS; // force a capture in aoui32_but_scan()
   aoui32_but_scan();
-  aoui32_but_scan();
+  aoui32_but_prvstate = aoui32_but_curstate;
 }
 
 
 /*!
     @brief  This function scans all buttons for their state (up, down) 
-            and records that in a global variable. It also maintains
-            the previous state. Use functions aoui32_but_isup()/down(), 
-            and/or aoui32_but_wentup()/wentdown() to determine which 
-            buttons are respectively went up/down.
-    @note   Call aoui32_but_scan() frequently, but also with delays 
-            in between (1ms) to mitigate contact bounce of the buttons.
+            and records that in a global variable. 
+    @note   Call aoui32_but_scan() frequently for a responsive UI.
+    @note   The previous state is also recorded. Subsequently use functions 
+            aoui32_but_isup()/down(), and/or aoui32_but_wentup()/wentdown() 
+            to determine which buttons are respectively went up/down.
+    @note   Do not skip checking wentdown() [up] between two calls of scan().
+    
+            button   ----------_-_-_-_______________-_-_------------------
+            scan     --+-----+-----+-----+-----+-----+-----+-----+-----+--
+            isup     ---------------________________________--------------
+            isdown   _______________------------------------______________
+            wentdown _______________------________________________________
+            wentup   _______________________________________------________
+            
+                                   ^     ^
+            If no check between these two calls, the wentdown() is missed.
 */
 void aoui32_but_scan() {
-  // Save previous state
+  // Copy previous state (so that only a single wentxxx happens)
   aoui32_but_prvstate = aoui32_but_curstate;
-  // Get new state
-  if( millis()-aoui32_but_lastscan >= AOUI32_BUT_BOUNCE_MS ) {
-    // Get all GPIO ports in one read
-    uint32_t buts=REG_READ(GPIO_IN_REG) ;
-    aoui32_but_curstate = AOUI32_BUT_ALL;
-    // All three buttons are low active
-    if( buts & (1<<AOUI32_BUT_A_PIN) ) aoui32_but_curstate ^= AOUI32_BUT_A;
-    if( buts & (1<<AOUI32_BUT_X_PIN) ) aoui32_but_curstate ^= AOUI32_BUT_X;
-    if( buts & (1<<AOUI32_BUT_Y_PIN) ) aoui32_but_curstate ^= AOUI32_BUT_Y;
-    // Record new capture time
-    aoui32_but_lastscan= millis();
-  }
+
+  // Skip if still in "contact bounce time"
+  if( millis()-aoui32_but_lastscan < AOUI32_BUT_BOUNCE_MS ) return;
+
+  // Get all GPIO ports in one read
+  uint32_t buts=REG_READ(GPIO_IN_REG) ;
+  aoui32_but_curstate = AOUI32_BUT_ALL;
+  // All three buttons are low active
+  if( buts & (1<<AOUI32_BUT_A_PIN) ) aoui32_but_curstate ^= AOUI32_BUT_A;
+  if( buts & (1<<AOUI32_BUT_X_PIN) ) aoui32_but_curstate ^= AOUI32_BUT_X;
+  if( buts & (1<<AOUI32_BUT_Y_PIN) ) aoui32_but_curstate ^= AOUI32_BUT_Y;
+  // Record new capture time
+  aoui32_but_lastscan= millis();
 }
 
 

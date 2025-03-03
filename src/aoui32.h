@@ -23,7 +23,7 @@
 
 
 // Identifies lib version
-#define AOUI32_VERSION "0.3.9"
+#define AOUI32_VERSION "0.3.10"
 
 
 // Include the (headers of the) modules of this app
