@@ -1,6 +1,6 @@
 // aoui32.h - drivers for the UI elements on the OSP32 board.
 /*****************************************************************************
- * Copyright 2024 by ams OSRAM AG                                            *
+ * Copyright 2024,2025 by ams OSRAM AG                                       *
  * All rights are reserved.                                                  *
  *                                                                           *
  * IMPORTANT - PLEASE READ CAREFULLY BEFORE COPYING, INSTALLING OR USING     *
@@ -23,7 +23,7 @@
 
 
 // Identifies lib version
-#define AOUI32_VERSION "0.3.10"
+#define AOUI32_VERSION "0.4.0"
 
 
 // Include the (headers of the) modules of this app

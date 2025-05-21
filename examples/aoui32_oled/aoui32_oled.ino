@@ -1,6 +1,6 @@
 // aoui32-oled.ino - demo of the UI elements on the OSP32 board, button changes OLED
 /*****************************************************************************
- * Copyright 2024 by ams OSRAM AG                                            *
+ * Copyright 2024,2025 by ams OSRAM AG                                       *
  * All rights are reserved.                                                  *
  *                                                                           *
  * IMPORTANT - PLEASE READ CAREFULLY BEFORE COPYING, INSTALLING OR USING     *
@@ -44,6 +44,9 @@ ui32: init
 */
 
 
+int count;
+
+
 void setup() {
   Serial.begin(115200);
   Serial.printf("\n\nWelcome to aoui32-oled.ino\n");
@@ -62,7 +65,7 @@ void setup() {
 void loop() {
   aoui32_but_scan();
 
-  if( aoui32_but_wentdown(AOUI32_BUT_A) ) aoui32_oled_msg("Long message: the (A) button is being pressed, please release it again.");
+  if( aoui32_but_wentdown(AOUI32_BUT_A) ) aoui32_oled_msgf("Message %d: the (A) button is being pressed, please release it again.", ++count );
   if( aoui32_but_wentdown(AOUI32_BUT_X) ) aoui32_led_on( AOUI32_LED_GRN );
   if( aoui32_but_wentdown(AOUI32_BUT_Y) ) aoui32_led_on( AOUI32_LED_RED );
 

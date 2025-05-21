@@ -1,6 +1,6 @@
 // aoui32_led.h - drivers for the 128x32 pixel OLED (UI) on the OSP32 board.
 /*****************************************************************************
- * Copyright 2024 by ams OSRAM AG                                            *
+ * Copyright 2024,2025 by ams OSRAM AG                                       *
  * All rights are reserved.                                                  *
  *                                                                           *
  * IMPORTANT - PLEASE READ CAREFULLY BEFORE COPYING, INSTALLING OR USING     *
@@ -28,6 +28,8 @@
 
 // Replaces the OLED screen with a full screen rectangle with the passed `msg` shown in a small font.
 void aoui32_oled_msg(const char * msg);
+// Replaces the OLED screen with a full screen rectangle with the passed formatted message (as printf) shown in a small font.
+void aoui32_oled_msgf(const char * fmt, ... );
 // Replaces the OLED screen with an "app status screen" showing the app `name`, and what the buttons do.
 void aoui32_oled_state(const char * state, const char * xlbl, const char * ylbl);
 // Replaces the OLED screen with a splash screen showing an "OSP logo", the executable name, and the executable version.

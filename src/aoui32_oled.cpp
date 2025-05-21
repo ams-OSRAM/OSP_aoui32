@@ -1,6 +1,6 @@
 // aoui32_oled.cpp - drivers for the 128x32 OLED (UI) on the OSP32 board.
 /*****************************************************************************
- * Copyright 2024 by ams OSRAM AG                                            *
+ * Copyright 2024,2025 by ams OSRAM AG                                       *
  * All rights are reserved.                                                  *
  *                                                                           *
  * IMPORTANT - PLEASE READ CAREFULLY BEFORE COPYING, INSTALLING OR USING     *
@@ -29,6 +29,7 @@
     @param  msg
             The message to shows.
     @note   This is intended to show an error message.
+    @note   See also `aoui32_oled_msgf()`.
 */
 void aoui32_oled_msg(const char * msg) {
   toled_clear();
@@ -42,6 +43,24 @@ void aoui32_oled_msg(const char * msg) {
   toled_openrect(0, 0, 127, 31 );
 
   toled_commit();
+}
+
+
+/*!
+    @brief  Replaces the OLED screen with a full screen rectangle 
+            with the passed formatted message shown in a small font.
+    @brief  Formatted print to the quad 7-segment display.
+    @param  fmt, ...
+            Formatted message as in printf()
+    @note   This is intended to show an error message.
+*/
+void aoui32_oled_msgf(const char * fmt, ... ) {
+  char str[96]; 
+  va_list args;
+  va_start(args,fmt);
+  vsnprintf(str,sizeof str,fmt,args);
+  va_end(args);
+  aoui32_oled_msg(str);
 }
 
 

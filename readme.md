@@ -118,6 +118,7 @@ The headers contain little documentation; for that see the module source files.
   ![OLED showing state](extras/state.jpg)
 
 - `aoui32_oled_msg(msg)` shows a full screen (error) message in sans5 font.
+  There is also the variant `aoui32_oled_msgf(msg)` with printf like formatting.
  
   ![OLED showing state](extras/message.jpg)
 
@@ -174,6 +175,9 @@ library.
 
 ## Version history _aoui32_
 
+- **2025 May 25, 0.4.0**
+  - Added formatted message to OLED `aoui32_oled_msgf()`.
+  
 - **2025 March 3, 0.3.10**
   - Improved doc on `aoui32_but_scan()`.
   - Bug fix in `aoui32_but_init()`.
