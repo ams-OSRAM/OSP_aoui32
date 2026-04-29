@@ -1,6 +1,6 @@
 // aoui32.h - drivers for the UI elements on the OSP32 board.
 /*****************************************************************************
- * Copyright 2024,2025 by ams OSRAM AG                                       *
+ * Copyright 2024-2026 by ams OSRAM AG                                       *
  * All rights are reserved.                                                  *
  *                                                                           *
  * IMPORTANT - PLEASE READ CAREFULLY BEFORE COPYING, INSTALLING OR USING     *
@@ -23,7 +23,7 @@
 
 
 // Identifies lib version
-#define AOUI32_VERSION "0.4.0"
+#define AOUI32_VERSION "0.5.0"
 
 
 // Include the (headers of the) modules of this app
@@ -32,7 +32,7 @@
 #include <aoui32_oled.h> // driver for the 128x32 pixel OLED on the OSP32 board.
 
 
-// Initializes the aoui32 library (but, led, oled).
+// Initializes the aoui32 library (but, led, oled) for the OSP32 board.
 void aoui32_init();
 
 

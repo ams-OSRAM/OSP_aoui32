@@ -43,7 +43,7 @@ The image below shows the OSP32 board with the UI elements highlighted in red.
 
 This library comes with the following examples.
 You can find them in the Arduino IDE via 
-File > Examples > OSP UIDriversOSP32 aoui32 > ...
+[File > Examples > OSP UIDriversOSP32 aoui32 > ...](examples):
 
 - **aoui32_but** ([source](examples/aoui32_but))  
   This demonstrates how to detect button presses and button releases of the
@@ -79,7 +79,7 @@ This library contains three modules, see figure below (arrows indicate `#include
   [Tiny OLED library](https://github.com/maarten-pennings/toled/) (toled).
   The _aoui32_ library comes with a [copy](src/toled) of toled included, to ensure there
   are no versioning issues. The included library is a single module (c/h file),
-  but it comes with 5 extra files, each implementing a font of some size.
+  but it comes with 6 extra files, each implementing a font of some size.
 
 
 ## API
@@ -92,7 +92,9 @@ The headers contain little documentation; for that see the module source files.
 
 ### aoui32
 
-- `aoui32_init()` initializes the button and led pins and configures the OLED.
+- `aoui32_init()` initializes the button, led pins and configures the OLED for OSP32 board.
+  For a board with different pin-out, call `aoui32_but_init()`, `aoui32_led_init()`, 
+  and `aoui32_oled_init()` directly.
 - `AOUI32_VERSION`  identifies the version of the library.
 
 
@@ -117,8 +119,9 @@ The headers contain little documentation; for that see the module source files.
  
   ![OLED showing state](extras/state.jpg)
 
-- `aoui32_oled_msg(msg)` shows a full screen (error) message in sans5 font.
+- `aoui32_oled_msg(msg)` shows a full screen (error) message in sans8 font.
   There is also the variant `aoui32_oled_msgf(msg)` with printf like formatting.
+  There is also the variant `aoui32_oled_word(word)` which uses sans14 font.
  
   ![OLED showing state](extras/message.jpg)
 
@@ -175,6 +178,14 @@ library.
 
 ## Version history _aoui32_
 
+- **2026 April 29, 0.5.0**
+  - Added `aoui32_oled_word()` to show one big word.
+  - Init functions `aoui32_but_init()`, `aoui32_led_init()`, and `aoui32_oled_init()` now have explicit pin parameters (with OSP32 pins as default).
+  - `aoui32_oled_state()` now has, in addition to the strings to be displayed in the OLED field, also explicit labels (tiny font in upperleft of OLED field). The label parameters have defaults to be backward compatible. Note that argument _names_ have changed, not their function.
+  - API doc specifies which fonts are used.
+  - Added link to examples.
+  - Switched to toled library 0.7.1 (chars appearance/width changed, dding `mono5`, bug solved in `fillrect`).
+  
 - **2025 May 25, 0.4.0**
   - Added formatted message to OLED `aoui32_oled_msgf()`.
   

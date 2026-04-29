@@ -134,7 +134,7 @@ static const uint8_t toled_sans5_bmp[] = {
   0x80, // #
   0x80, // #
 
-  // @96 '0' (5 pixels wide)
+  // @96 '0' (3 pixels wide)
   0xE0, // ###
   0xA0, // # #
   0xA0, // # #
@@ -238,7 +238,7 @@ static const uint8_t toled_sans5_bmp[] = {
   0x40, //  #
   0x20, //   #
 
-  // @174 '=' ( pixels wide)
+  // @174 '=' (4 pixels wide)
   0x00, //
   0x00, //
   0xF0, // ####
@@ -526,9 +526,7 @@ static const uint8_t toled_sans5_bmp[] = {
   0x00, //
   0x00, //
 
-//mcp
-
-  // @390 'a' (5 pixels wide)
+  // @390 'a' (4 pixels wide)
   0x00, //
   0x70, //  ###
   0x90, // #  #
@@ -770,7 +768,7 @@ static const uint8_t toled_sans5_bmp[] = {
 };
 
 
-// Font descriptor: dsc[ch][0] width of ch, dsc[ch][1] height of ch, dsc[ch][2] offset in toled_sans8_bmp of ch
+// Font descriptor: dsc[ch][0] width of ch, dsc[ch][1] height of ch, dsc[ch][2] offset in toled_sans5_bmp of ch
 static const int toled_sans5_dsc[95][3] = {
   {4, 6,   0},    //
   {1, 6,   6},    // !
@@ -801,7 +799,7 @@ static const int toled_sans5_dsc[95][3] = {
   {1, 6, 156},    // :
   {2, 6, 162},    // ;
   {3, 6, 168},    // <
-  {5, 6, 174},    // =
+  {4, 6, 174},    // =
   {3, 6, 180},    // >
   {5, 6, 186},    // ?
   {6, 6, 192},    // @
@@ -837,7 +835,7 @@ static const int toled_sans5_dsc[95][3] = {
   {5, 6, 372},    // ^
   {4, 6, 378},    // _
   {2, 6, 384},    // `
-  {5, 6, 390},    // a
+  {4, 6, 390},    // a
   {4, 6, 396},    // b
   {4, 6, 402},    // c
   {4, 6, 408},    // d

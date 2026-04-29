@@ -1,6 +1,6 @@
 // aoui32_led.cpp - drivers for the signaling LEDs (UI) on the OSP32 board.
 /*****************************************************************************
- * Copyright 2024 by ams OSRAM AG                                            *
+ * Copyright 2024-2026 by ams OSRAM AG                                       *
  * All rights are reserved.                                                  *
  *                                                                           *
  * IMPORTANT - PLEASE READ CAREFULLY BEFORE COPYING, INSTALLING OR USING     *
@@ -22,22 +22,29 @@
 #include <aoui32.h>  // own
 
 
-// LED pins are hardwired matching the OSP32 board.
-#define AOUI32_LED_GRN_PIN  7
-#define AOUI32_LED_RED_PIN 15
+// Which pins drive the green and red LED.
+static int aoui32_led_grn_pin;
+static int aoui32_led_red_pin;
 
 
 /*!
     @brief  Initializes the signaling LED pins.
+    @param  pin_grn
+            The pin number for the green LED - assumed high active.
+    @param  pin_red
+            The pin number for the red LED - assumed high active.
     @note   All pins are hardwired matching the OSP32 board.
 */
-void aoui32_led_init() {
+void aoui32_led_init(int pin_grn, int pin_red) {
+  // Record pins
+  aoui32_led_grn_pin= pin_grn;
+  aoui32_led_red_pin= pin_red;
   // Switch LEDs off (high active)
-  digitalWrite(AOUI32_LED_GRN_PIN, LOW );
-  digitalWrite(AOUI32_LED_RED_PIN, LOW );
+  digitalWrite(aoui32_led_grn_pin, LOW );
+  digitalWrite(aoui32_led_red_pin, LOW );
   // Configure the GPIO pins
-  pinMode( AOUI32_LED_GRN_PIN, OUTPUT );
-  pinMode( AOUI32_LED_RED_PIN, OUTPUT );
+  pinMode( aoui32_led_grn_pin, OUTPUT );
+  pinMode( aoui32_led_red_pin, OUTPUT );
 }
 
 
@@ -47,8 +54,8 @@ void aoui32_led_init() {
             A mask, formed by OR-ing AOUI32_LED_... macros.
 */
 void aoui32_led_on(int leds) {
-  if( leds & AOUI32_LED_GRN ) digitalWrite(AOUI32_LED_GRN_PIN, HIGH);
-  if( leds & AOUI32_LED_RED ) digitalWrite(AOUI32_LED_RED_PIN, HIGH);
+  if( leds & AOUI32_LED_GRN ) digitalWrite(aoui32_led_grn_pin, HIGH);
+  if( leds & AOUI32_LED_RED ) digitalWrite(aoui32_led_red_pin, HIGH);
 }
 
 
@@ -58,8 +65,8 @@ void aoui32_led_on(int leds) {
             A mask, formed by OR-ing AOUI32_LED_... macros.
 */
 void aoui32_led_off(int leds) {
-  if( leds & AOUI32_LED_GRN ) digitalWrite(AOUI32_LED_GRN_PIN, LOW);
-  if( leds & AOUI32_LED_RED ) digitalWrite(AOUI32_LED_RED_PIN, LOW);
+  if( leds & AOUI32_LED_GRN ) digitalWrite(aoui32_led_grn_pin, LOW);
+  if( leds & AOUI32_LED_RED ) digitalWrite(aoui32_led_red_pin, LOW);
 }
 
 
@@ -69,6 +76,6 @@ void aoui32_led_off(int leds) {
             A mask, formed by OR-ing AOUI32_LED_... macros.
 */
 void aoui32_led_toggle(int leds) {
-  if( leds & AOUI32_LED_GRN ) digitalWrite(AOUI32_LED_GRN_PIN, ! digitalRead(AOUI32_LED_GRN_PIN) );
-  if( leds & AOUI32_LED_RED ) digitalWrite(AOUI32_LED_RED_PIN, ! digitalRead(AOUI32_LED_RED_PIN) );
+  if( leds & AOUI32_LED_GRN ) digitalWrite(aoui32_led_grn_pin, ! digitalRead(aoui32_led_grn_pin) );
+  if( leds & AOUI32_LED_RED ) digitalWrite(aoui32_led_red_pin, ! digitalRead(aoui32_led_red_pin) );
 }

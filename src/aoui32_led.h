@@ -1,6 +1,6 @@
 // aoui32_led.h - drivers for the signaling LEDs (UI) on the OSP32 board.
 /*****************************************************************************
- * Copyright 2024 by ams OSRAM AG                                            *
+ * Copyright 2024-2026 by ams OSRAM AG                                       *
  * All rights are reserved.                                                  *
  *                                                                           *
  * IMPORTANT - PLEASE READ CAREFULLY BEFORE COPYING, INSTALLING OR USING     *
@@ -22,6 +22,11 @@
 #define _AOUI32_LED_H_
 
 
+// LED pins for the OSP32 board.
+#define AOUI32_LED_GRN_PIN  7
+#define AOUI32_LED_RED_PIN 15
+
+
 // Bit mask for the green signaling LED.
 #define AOUI32_LED_GRN   (1<<0)
 // Bit mask for the red signaling LED.
@@ -39,7 +44,7 @@ void aoui32_led_toggle(int leds);
 
 
 // Initializes the signaling LED pins (do not call, is called by aoui32 init).
-void aoui32_led_init(); 
+void aoui32_led_init(int pin_grn=AOUI32_LED_GRN_PIN, int pin_red=AOUI32_LED_RED_PIN); 
 
 
 #endif

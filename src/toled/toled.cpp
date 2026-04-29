@@ -10,6 +10,8 @@
 
 static uint8_t toled_framebuf[TOLED_SIZE];
 // Frame buffer layout of the OLED with 128 columns and 32 rows
+// Every rectangle in the diagram below is one byte. It holds 8 pixels,
+// which is a quarter column of the OLED in landscape.
 //      0     1     2        127
 //    +---+ +---+ +---+     +---+
 //  0 |LSB| |   | |   |     |   |
@@ -33,7 +35,7 @@ static uint8_t toled_framebuf[TOLED_SIZE];
 //    +---+ +---+ +---+     +---+
 
 
-// Applies msk to toled_framebuf[loc] using col
+// Applies mask msk to toled_framebuf[loc] using color col
 static inline void toled_framebuf_mask(int loc, int msk, int col) {
   if( loc<0 || loc>=TOLED_SIZE ) return;
   switch( col ) {
@@ -224,7 +226,7 @@ static int toled_cmds(const uint8_t *cmds, int count) {
 
 
 // Inits screen (using hardwired I2C address 3C).
-// Caller must setup I2C pins and bus speed
+// Caller must have setup I2C pins and bus speed.
 //   Wire.begin(8,18);
 //   Wire.setClock(1000*1000); // Works for OLED, too high for other I2C devices on the bus
 void toled_init() {
@@ -240,7 +242,7 @@ void toled_clear(void) {
 }
 
 
-// Commits frame buffer (send it to the OLED).
+// Commits the frame buffer (send it to the OLED).
 void toled_commit(void) {
   // Send coordinates
   static const uint8_t cmds[] = {
@@ -288,6 +290,8 @@ void toled_verline(int x, int y0, int y1, int col ) {
 
   int msk0= 0xFF & ~((1 << (y0 & 7))-1);
   int msk1= (1 << ((y1 & 7)+1))-1;
+  // Correct masks for short verline 
+  if( loc0==loc1 ) { msk0&=msk1; msk1&=msk0; }
 
   if(  msk0 != 0xFF ) { // pre part of line here
     toled_framebuf_mask(loc0,msk0,col);
@@ -336,6 +340,8 @@ void toled_fillrect(int x0, int y0, int x1, int y1, int col ) {
 
   int msk0= 0xFF & ~((1 << (y0 & 7))-1);
   int msk1= (1 << ((y1 & 7)+1))-1;
+  // Correct masks for short rects 
+  if( y0/8==y1/8 ) { msk0&=msk1; msk1&=msk0; }
 
   for( int x=x0; x<=x1; x++ ) {
     int loc0= x + TOLED_WIDTH*(y0/8);
@@ -384,6 +390,7 @@ void toled_cursor(int x, int y) {
 
 
 // Hardwired access to font data (on separate files)
+void toled_mono5 (char ch, int * width, int * height, const uint8_t ** bmp );
 void toled_sans5 (char ch, int * width, int * height, const uint8_t ** bmp );
 void toled_sans8 (char ch, int * width, int * height, const uint8_t ** bmp );
 void toled_sans10(char ch, int * width, int * height, const uint8_t ** bmp );
@@ -395,18 +402,18 @@ typedef void (*toled_fontdata_t)(char ch, int * width, int * height, const uint8
 
 // Available fonts in this library
 static const toled_fontdata_t toled_fontdatas[] = { 
-  toled_sans5, toled_sans8, toled_sans10, toled_sans12, toled_sans14 
+  toled_mono5, toled_sans5, toled_sans8, toled_sans10, toled_sans12, toled_sans14 
 };
 
 
 // These settings record how text will be rendered
 static toled_fontdata_t toled_fontdata  = toled_sans8;
-static int              toled_kern  = 1; // space between any two chars
-static int              toled_color = TOLED_COL_WHITE;
-static int              toled_margin = 0; // margin, only applied when wrapping
+static int              toled_kern      = 1; // space between any two chars
+static int              toled_color     = TOLED_COL_WHITE;
+static int              toled_margin    = 0; // margin, only applied when wrapping
 
 
-// Sets font, color, kerning between chars (in pix), and margin for wrap around.
+// Sets font, color, kerning (space between chars in pix), and margin (in pix) for wrap around.
 void toled_font(toled_font_t font, int col, int kern, int margin ) {
   toled_fontdata= toled_fontdatas[font];
   toled_kern= kern;
@@ -416,6 +423,7 @@ void toled_font(toled_font_t font, int col, int kern, int margin ) {
 
 
 // Adds character to frame buffer at cursor.
+// The cursor is where the upper left pixel of the char will be drawn.
 void toled_char(char ch) {
   // Lookup bitmap in font
   int width;
@@ -434,7 +442,7 @@ void toled_char(char ch) {
   if( toled_x + width + toled_margin > TOLED_WIDTH ) {
     toled_x = toled_margin;
     toled_y += height;
-    if( toled_y + height > TOLED_HEIGHT ) toled_y = 0;
+    // if( toled_y + height > TOLED_HEIGHT ) toled_y = 0;
   }
   // Draw character, pixel by pixel
   int stride= (width-1)/8+1; // ceil(width/8) is width of the char in bytes
@@ -459,6 +467,7 @@ void toled_char(char ch) {
 
 
 // Adds string to frame buffer at cursor.
+// The cursor is where the upper left pixel of the char will be drawn.
 void toled_str(const char *s) {
   while( *s ) toled_char(*s++);
 }
@@ -487,7 +496,8 @@ int toled_strwidth(const char *s) {
 }
 
 
-// Left (align=-1), center (align=0) or right (align=1) draw s in width.
+// Left (align=-1), center (align=0) or right (align=1) draw string s in a 
+// box of width pixels. Box starts at the cursor.
 void toled_str(const char *s, int width, int align) {
   int remainingspace = width - toled_strwidth(s);
   if( align==0 ) {
@@ -499,3 +509,9 @@ void toled_str(const char *s, int width, int align) {
   }
   toled_str(s);
 }
+
+
+// Font test strings
+//   " !\"#$%&'()*+,-./0123456789:;<=>?"
+//   "@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_"
+//   "`abcdefghijklmnopqrstuvwxyz{|}~"

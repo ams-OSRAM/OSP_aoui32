@@ -1,6 +1,6 @@
 // aoui32_but.cpp - drivers for the buttons (UI) on the OSP32 board.
 /*****************************************************************************
- * Copyright 2024 by ams OSRAM AG                                            *
+ * Copyright 2024-2026 by ams OSRAM AG                                       *
  * All rights are reserved.                                                  *
  *                                                                           *
  * IMPORTANT - PLEASE READ CAREFULLY BEFORE COPYING, INSTALLING OR USING     *
@@ -26,12 +26,13 @@
 #define AOUI32_BUT_BOUNCE_MS 50
 
 
-// Button pins are hardwired matching the OSP32 board.
-#define AOUI32_BUT_A_PIN  0
-#define AOUI32_BUT_X_PIN  17
-#define AOUI32_BUT_Y_PIN  16
+// Which pins are driven by the A, X, and Y button.
+static int aoui32_but_a_pin;
+static int aoui32_but_x_pin;
+static int aoui32_but_y_pin;
 
 
+// State of the buttons
 static unsigned aoui32_but_prvstate; // button state of one-but-last scan()
 static unsigned aoui32_but_curstate; // button state of last scan()
 static uint32_t aoui32_but_lastscan; // time of last scan()
@@ -39,13 +40,22 @@ static uint32_t aoui32_but_lastscan; // time of last scan()
 
 /*!
     @brief  Initializes the button pins.
+    @param  pin_a
+            The pin number for the A-button - assumed low active.
+    @param  pin_x
+            The pin number for the X-button - assumed low active.
+    @param  pin_y
+            The pin number for the Y-button - assumed low active.
     @note   All pins are hardwired matching the OSP32 board.
 */
-void aoui32_but_init() {
+void aoui32_but_init(int pin_a, int pin_x, int pin_y) {
+  aoui32_but_a_pin= pin_a;
+  aoui32_but_x_pin= pin_x;
+  aoui32_but_y_pin= pin_y;
   // Configure the GPIO pins
-  pinMode( AOUI32_BUT_A_PIN, INPUT_PULLUP );
-  pinMode( AOUI32_BUT_X_PIN, INPUT_PULLUP );
-  pinMode( AOUI32_BUT_Y_PIN, INPUT_PULLUP );
+  pinMode( aoui32_but_a_pin, INPUT_PULLUP );
+  pinMode( aoui32_but_x_pin, INPUT_PULLUP );
+  pinMode( aoui32_but_y_pin, INPUT_PULLUP );
   // Scan the button states, 
   aoui32_but_lastscan= millis() - AOUI32_BUT_BOUNCE_MS; // force a capture in aoui32_but_scan()
   aoui32_but_scan();
@@ -83,9 +93,9 @@ void aoui32_but_scan() {
   uint32_t buts=REG_READ(GPIO_IN_REG) ;
   aoui32_but_curstate = AOUI32_BUT_ALL;
   // All three buttons are low active
-  if( buts & (1<<AOUI32_BUT_A_PIN) ) aoui32_but_curstate ^= AOUI32_BUT_A;
-  if( buts & (1<<AOUI32_BUT_X_PIN) ) aoui32_but_curstate ^= AOUI32_BUT_X;
-  if( buts & (1<<AOUI32_BUT_Y_PIN) ) aoui32_but_curstate ^= AOUI32_BUT_Y;
+  if( buts & (1<<aoui32_but_a_pin) ) aoui32_but_curstate ^= AOUI32_BUT_A;
+  if( buts & (1<<aoui32_but_x_pin) ) aoui32_but_curstate ^= AOUI32_BUT_X;
+  if( buts & (1<<aoui32_but_y_pin) ) aoui32_but_curstate ^= AOUI32_BUT_Y;
   // Record new capture time
   aoui32_but_lastscan= millis();
 }

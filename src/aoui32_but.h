@@ -1,6 +1,6 @@
 // aoui32_but.h - drivers for the buttons (UI) on the OSP32 board.
 /*****************************************************************************
- * Copyright 2024 by ams OSRAM AG                                            *
+ * Copyright 2024-2026 by ams OSRAM AG                                       *
  * All rights are reserved.                                                  *
  *                                                                           *
  * IMPORTANT - PLEASE READ CAREFULLY BEFORE COPYING, INSTALLING OR USING     *
@@ -20,6 +20,12 @@
  *****************************************************************************/
 #ifndef _AOUI32_BUT_H_
 #define _AOUI32_BUT_H_
+
+
+// Button pins for the OSP32 board.
+#define AOUI32_BUT_A_PIN  0
+#define AOUI32_BUT_X_PIN  17
+#define AOUI32_BUT_Y_PIN  16
 
 
 // Bit mask for the button labeled 'A'.
@@ -44,7 +50,7 @@ int  aoui32_but_wentdown(int buts);
 int  aoui32_but_wentup  (int buts);
 
 // Initializes the button pins (do not call, is called by aoui32 init).
-void aoui32_but_init(); 
+void aoui32_but_init(int pin_a=AOUI32_BUT_A_PIN, int pin_x=AOUI32_BUT_X_PIN, int pin_y=AOUI32_BUT_Y_PIN);
 
 
 #endif
